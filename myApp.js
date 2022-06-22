@@ -1,13 +1,14 @@
 require('dotenv').config();
 
 /** 1) Install & Set up mongoose */
+// at the first successful server submission, a database named "myFirstDatabase" will be created in mongoDB (such name is present in MONGO_URI variable)
 const MONGO_URI = process.env.MONGO_URI;
 let mongoose = require("mongoose");
 mongoose.connect(MONGO_URI, { useNewUrlParser: true /*, useUnifiedTopology: true*/})
   .then(() =>  console.log('Connected to database') )
   .catch(err =>  console.error('Could not connect to mongo DB', err) );
 
-/** 2) Create a 'Person' Model */
+/** 2) Create a 'Person' Schema */
 const personSchema = new mongoose.Schema({
   //_id: mongoose.ObjectId,
   name: {
@@ -23,8 +24,10 @@ const personSchema = new mongoose.Schema({
   favoriteFoods: [String]
 });
 
-/** 3) Create and Save a Person */
-const Person = mongoose.model("Person", personSchema);
+/** 3) Create a 'Person' Model instance */
+// An instance of a model is called a document. Models are responsible for creating and reading documents from the underlying MongoDB database.
+// a "people" collection will be created in your mongoDB
+const Person = mongoose.model("Person", personSchema, "people");
 
 /*const person = new Person({
     name: "Andre Barreira Dinis",
@@ -32,6 +35,7 @@ const Person = mongoose.model("Person", personSchema);
     favoriteFoods: ["Pizza", "Lasanha", "Cozido à Portuguesa"]
   });*/
 
+/** 4) Create and Save a Person */
 const createAndSavePerson = function(done) {
   const janeDoe = new Person({
     name: "Jane Doe",
@@ -44,8 +48,7 @@ const createAndSavePerson = function(done) {
   });
 };
 
-/*
-const arrayOfPeople = [
+/*const arrayOfPeople = [
     {name:"John Doe", age:51},
     {name:"Adolfo Dias", age:32, favoriteFoods:["Veal on the plate", "Fish in the oven sky"]},
     {name:"Amílcar Alho", age: 60, favoriteFoods:["Codfish À Brás", "Veal Stue"]},
